@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla de Tareas - Seguimiento de Niños</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- HEADER / LOGIN -->
+    <header class="header">
+        <div class="header-content">
+            <h1>📋 Seguimiento de Tareas</h1>
+            <div class="login-section" id="loginSection">
+                <select id="userSelect" class="user-select">
+                    <option value="">-- Seleccionar usuario --</option>
+                </select>
+                <button id="loginBtn" class="btn btn-primary" type="button">Entrar</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL (oculto hasta login) -->
+    <div id="mainContent" class="main-content hidden">
+        <!-- PANEL DE ADMINISTRACIÓN (solo para root) -->
+        <div id="adminPanel" class="admin-panel hidden">
+            <div class="admin-header">
+                <h2>👨‍💼 Panel de Administración</h2>
+                <button id="closeAdminBtn" class="btn btn-secondary btn-small" type="button">Volver</button>
+            </div>
+            
+            <div class="admin-content">
+                <!-- Crear nuevo usuario -->
+                <div class="admin-section">
+                    <h3>Crear Nuevo Usuario</h3>
+                    <div class="admin-form">
+                        <input type="text" id="newUserNameInput" placeholder="Nombre del usuario" class="form-input">
+                        <input type="text" id="newUserPinInput" placeholder="PIN (4 dígitos)" maxlength="4" class="form-input">
+                        <button id="createUserBtn" class="btn btn-primary" type="button">Crear Usuario</button>
+                    </div>
+                </div>
+
+                <!-- Lista de usuarios -->
+                <div class="admin-section">
+                    <h3>Usuarios</h3>
+                    <div id="usersList" class="users-list">
+                        <!-- Se llenarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENIDO NORMAL DE TAREAS -->
+        <div id="tasksContent">
+            <!-- CONTROLES -->
+            <div class="controls">
+                <div class="user-info">
+                    <h2 id="currentUserName">Bienvenido</h2>
+                    <div class="user-buttons">
+                        <button id="adminPanelBtn" class="btn btn-secondary btn-small" type="button" style="display: none;">⚙️ Administración</button>
+                        <button id="changePasswordBtn" class="btn btn-secondary btn-small" type="button">🔐 Cambiar PIN</button>
+                        <button id="logoutBtn" class="btn btn-secondary btn-small" type="button">Cerrar sesión</button>
+                    </div>
+                </div>
+                <div class="task-controls">
+                    <button id="addTaskBtn" class="btn btn-primary" type="button">+ Agregar tarea</button>
+                    <button id="exportBtn" class="btn btn-secondary admin-only" type="button" style="display: none;">📥 Exportar datos</button>
+                    <button id="importBtn" class="btn btn-secondary admin-only" type="button" style="display: none;">📤 Importar datos</button>
+                    <button id="clearBtn" class="btn btn-danger admin-only" type="button" style="display: none;">🗑️ Limpiar datos</button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                </div>
+            </div>
+
+            <!-- TABLA DE TAREAS -->
+            <div class="table-container">
+                <table class="tasks-table">
+                    <thead>
+                        <tr>
+                            <th class="task-name-col">Tarea</th>
+                            <th class="day-col">Lunes</th>
+                            <th class="day-col">Martes</th>
+                            <th class="day-col">Miércoles</th>
+                            <th class="day-col">Jueves</th>
+                            <th class="day-col">Viernes</th>
+                            <th class="day-col">Sábado</th>
+                            <th class="day-col">Domingo</th>
+                            <th class="actions-col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tasksList">
+                        <!-- Las tareas se insertan aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PANEL DE TOTALES -->
+            <div class="stats-panel">
+                <div class="stat-card">
+                    <h3>Esta Semana</h3>
+                    <div class="stat-value" id="weeklyTotal">0</div>
+                    <div class="stat-label">puntos</div>
+                    <div class="stat-percentage" id="weeklyPercent">0%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Este Mes</h3>
+                    <div class="stat-value" id="monthlyTotal">0</div>
+                    <div class="stat-label">puntos</div>
+                    <div class="stat-percentage" id="monthlyPercent">0%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Este Año</h3>
+                    <div class="stat-value" id="yearlyTotal">0</div>
+                    <div class="stat-label">puntos</div>
+                    <div class="stat-percentage" id="yearlyPercent">0%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/storage.js" defer></script>
+    <script src="js/calculations.js" defer></script>
+    <script src="js/app.js" defer></script>
+</body>
+</html>

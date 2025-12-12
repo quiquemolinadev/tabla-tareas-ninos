@@ -1,0 +1,683 @@
+/* ============================================
+   ESTILOS GLOBALES
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color-success: #4ade80;
+    --color-warning: #fbbf24;
+    --color-danger: #f87171;
+    --color-primary: #3b82f6;
+    --color-secondary: #6b7280;
+    --color-bg: #f9fafb;
+    --color-text: #1f2937;
+    --color-border: #e5e7eb;
+    --spacing: 1rem;
+    --radius: 0.5rem;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+/* ============================================
+   HEADER / NAVEGACIÓN
+   ============================================ */
+
+.header {
+    background: white;
+    border-bottom: 2px solid var(--color-border);
+    padding: var(--spacing) 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--spacing);
+}
+
+.header h1 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing);
+    color: var(--color-primary);
+}
+
+.login-section {
+    display: flex;
+    gap: var(--spacing);
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* ============================================
+   INPUTS Y SELECTS
+   ============================================ */
+
+.name-input,
+.user-select {
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-family: inherit;
+    flex: 1;
+    min-width: 200px;
+}
+
+.name-input:focus,
+.user-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ============================================
+   BOTONES
+   ============================================ */
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+}
+
+.btn-secondary {
+    background-color: var(--color-secondary);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #4b5563;
+}
+
+.btn-danger {
+    background-color: var(--color-danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #f05252;
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   LAYOUT PRINCIPAL
+   ============================================ */
+
+.main-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--spacing);
+}
+
+.main-content.hidden {
+    display: none;
+}
+
+/* ============================================
+   CONTROLES
+   ============================================ */
+
+.controls {
+    background: white;
+    padding: var(--spacing);
+    border-radius: var(--radius);
+    margin-bottom: var(--spacing);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing);
+    align-items: center;
+    border: 1px solid var(--color-border);
+}
+
+.user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing);
+    flex-wrap: wrap;
+}
+
+.user-info h2 {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin: 0;
+}
+
+.user-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.task-controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+/* ============================================
+   TABLA DE TAREAS
+   ============================================ */
+
+.table-container {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    overflow-x: auto;
+    margin-bottom: var(--spacing);
+}
+
+.tasks-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.tasks-table thead {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.tasks-table th {
+    padding: 1rem;
+    text-align: center;
+    font-weight: 600;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.task-name-col {
+    text-align: left !important;
+    width: 250px;
+}
+
+.day-col {
+    width: 120px;
+}
+
+.actions-col {
+    width: 100px;
+}
+
+.tasks-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-border);
+    text-align: center;
+}
+
+.tasks-table tbody tr:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* Task Name Column */
+.task-row .task-name-cell {
+    text-align: left;
+    font-weight: 500;
+}
+
+.task-name-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: inherit;
+    font-weight: 500;
+}
+
+.task-name-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Estado Circles */
+.state-circle {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.state-circle:hover {
+    transform: scale(1.1);
+    border-color: var(--color-secondary);
+}
+
+.state-circle.completed {
+    background-color: var(--color-success);
+}
+
+.state-circle.partial {
+    background-color: var(--color-warning);
+}
+
+.state-circle.failed {
+    background-color: var(--color-danger);
+}
+
+.state-circle::after {
+    content: '';
+    display: inline-block;
+    position: relative;
+}
+
+.state-circle.completed::after {
+    content: '✓';
+    color: white;
+    font-weight: bold;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.state-circle.partial::after {
+    content: '◐';
+    color: white;
+    font-weight: bold;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.state-circle.failed::after {
+    content: '✕';
+    color: white;
+    font-weight: bold;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Acciones */
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.25rem;
+    transition: all 0.2s;
+    color: var(--color-danger);
+}
+
+.action-btn:hover {
+    transform: scale(1.2);
+}
+
+/* ============================================
+   PANEL DE ESTADÍSTICAS
+   ============================================ */
+
+.stats-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing);
+    margin-top: var(--spacing);
+}
+
+.stat-card {
+    background: white;
+    padding: var(--spacing);
+    border-radius: var(--radius);
+    border: 2px solid var(--color-border);
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.stat-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.stat-card h3 {
+    font-size: 1rem;
+    color: var(--color-secondary);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--color-secondary);
+    margin: 0.5rem 0;
+}
+
+.stat-percentage {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-success);
+    margin-top: 0.5rem;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .controls {
+        grid-template-columns: 1fr;
+    }
+
+    .task-controls {
+        justify-content: flex-start;
+    }
+
+    .day-col {
+        width: 100px;
+    }
+
+    .tasks-table th,
+    .tasks-table td {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .state-circle {
+        width: 35px;
+        height: 35px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .login-section {
+        flex-direction: column;
+    }
+
+    .name-input,
+    .user-select {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .task-name-col {
+        width: 150px;
+    }
+
+    .day-col {
+        width: 80px;
+    }
+
+    .tasks-table th,
+    .tasks-table td {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .state-circle {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .stats-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .task-controls {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .task-controls .btn {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .user-info {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-content {
+        padding: 0 0.5rem;
+    }
+
+    .header h1 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .task-name-col {
+        width: 120px;
+    }
+
+    .day-col {
+        width: 60px;
+    }
+
+    .actions-col {
+        width: 60px;
+    }
+
+    .tasks-table th,
+    .tasks-table td {
+        padding: 0.35rem;
+        font-size: 0.7rem;
+    }
+
+    .state-circle {
+        width: 28px;
+        height: 28px;
+    }
+
+    .state-circle::after {
+        font-size: 1rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+    }
+
+    .stat-percentage {
+        font-size: 1.2rem;
+    }
+}
+
+/* ============================================
+   PANEL DE ADMINISTRACIÓN
+   ============================================ */
+
+.admin-panel {
+    background: white;
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius);
+    margin-bottom: var(--spacing);
+    overflow: hidden;
+}
+
+.admin-panel.hidden {
+    display: none;
+}
+
+.admin-header {
+    background-color: var(--color-primary);
+    color: white;
+    padding: var(--spacing);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.admin-content {
+    padding: var(--spacing);
+}
+
+.admin-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.admin-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.admin-section h3 {
+    color: var(--color-primary);
+    margin-bottom: var(--spacing);
+    font-size: 1.2rem;
+}
+
+.admin-form {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.form-input {
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-family: inherit;
+    flex: 1;
+    min-width: 150px;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.users-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.user-item {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: var(--spacing);
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: var(--spacing);
+    align-items: center;
+}
+
+.user-item-info h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-text);
+    font-size: 1.1rem;
+}
+
+.user-item-info p {
+    margin: 0.25rem 0;
+    color: var(--color-secondary);
+    font-size: 0.9rem;
+}
+
+.user-item-pin {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.user-pin-input {
+    width: 100px;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    text-align: center;
+}
+
+.user-item-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.user-item-actions .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+/* ============================================
+   TASKS CONTENT
+   ============================================ */
+
+#tasksContent {
+    display: block;
+}
+
+#tasksContent.hidden {
+    display: none;
+}
