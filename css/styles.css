@@ -211,22 +211,27 @@ body {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.95rem;
-    display: flex;
-    flex-direction: column;
+    min-width: 100%;
 }
 
 .tasks-table thead {
     background-color: var(--color-primary);
     color: white;
-    display: flex;
-    flex-direction: row;
-    width: 100%;
 }
 
 .tasks-table thead tr {
     display: flex;
     width: 100%;
-    gap: 0;
+}
+
+.tasks-table tbody tr {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.tasks-table tbody tr:hover {
+    background-color: rgba(59, 130, 246, 0.05);
 }
 
 .tasks-table th {
@@ -237,53 +242,29 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    white-space: nowrap;
-    overflow: visible;
-    flex-shrink: 0;
-}
-
-.task-name-col {
-    text-align: left !important;
-    flex: 0 0 auto;
-    min-width: 360px;
-    justify-content: flex-start;
-    white-space: nowrap;
-    overflow: visible;
-    flex-shrink: 0;
-}
-
-.day-col {
-    flex: 0 0 120px;
-    min-width: 120px;
-    white-space: nowrap;
-    overflow: visible;
-    flex-shrink: 0;
-}
-
-.actions-col {
-    flex: 0 0 100px;
-    min-width: 100px;
-    white-space: nowrap;
-    overflow: visible;
-    flex-shrink: 0;
 }
 
 .tasks-table td {
     padding: 1rem;
-    border-bottom: 1px solid var(--color-border);
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Alineación de celdas de datos con encabezados */
-.tasks-table tbody td:nth-child(1) {
-    flex: 0 0 auto;
+/* ANCHOS DE COLUMNAS - Desktop */
+.task-name-col,
+.tasks-table tbody td:nth-child(1),
+.task-row .task-name-cell {
+    flex: 0 0 360px;
+    width: 360px;
     min-width: 360px;
+    max-width: 360px;
+    text-align: left;
     justify-content: flex-start;
 }
 
+.day-col,
 .tasks-table tbody td:nth-child(2),
 .tasks-table tbody td:nth-child(3),
 .tasks-table tbody td:nth-child(4),
@@ -292,36 +273,20 @@ body {
 .tasks-table tbody td:nth-child(7),
 .tasks-table tbody td:nth-child(8) {
     flex: 0 0 120px;
+    width: 120px;
     min-width: 120px;
+    max-width: 120px;
 }
 
+.actions-col,
 .tasks-table tbody td:nth-child(9) {
     flex: 0 0 100px;
+    width: 100px;
     min-width: 100px;
+    max-width: 100px;
 }
 
-.tasks-table tbody tr:hover {
-    background-color: rgba(59, 130, 246, 0.05);
-}
-
-.tasks-table tbody tr {
-    display: flex;
-    width: 100%;
-    gap: 0;
-}
-
-/* Task Name Column */
-.task-row .task-name-cell {
-    text-align: left;
-    font-weight: 500;
-    flex: 0 0 auto;
-    min-width: 360px;
-    justify-content: flex-start;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    width: 360px;
-}
-
+/* Task Name Input */
 .task-name-input {
     width: 100%;
     padding: 0.5rem;
@@ -341,7 +306,9 @@ body {
 
 /* Estado Circles */
 .state-circle {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -368,22 +335,11 @@ body {
     background-color: var(--color-danger);
 }
 
-.state-circle::after {
-    content: '';
-    display: inline-block;
-    position: relative;
-}
-
 .state-circle.completed::after {
     content: '✓';
     color: white;
     font-weight: bold;
     font-size: 1.3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
 }
 
 .state-circle.partial::after {
@@ -391,11 +347,6 @@ body {
     color: white;
     font-weight: bold;
     font-size: 1.3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
 }
 
 .state-circle.failed::after {
@@ -403,11 +354,6 @@ body {
     color: white;
     font-weight: bold;
     font-size: 1.3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
 }
 
 /* Acciones */
@@ -474,166 +420,6 @@ body {
     font-weight: bold;
     color: var(--color-success);
     margin-top: 0.5rem;
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-
-@media (max-width: 1024px) {
-    .controls {
-        grid-template-columns: 1fr;
-    }
-
-    .task-controls {
-        justify-content: flex-start;
-    }
-
-    .day-col {
-        flex: 0 0 100px;
-        min-width: 100px;
-    }
-
-    .tasks-table th,
-    .tasks-table td {
-        padding: 0.75rem;
-        font-size: 0.85rem;
-    }
-
-    .state-circle {
-        width: 35px;
-        height: 35px;
-    }
-}
-
-@media (max-width: 768px) {
-    .header h1 {
-        font-size: 1.5rem;
-    }
-
-    .login-section {
-        flex-direction: column;
-    }
-
-    .name-input,
-    .user-select {
-        width: 100%;
-        min-width: unset;
-    }
-
-    .task-name-col {
-        flex: 0 0 auto;
-        min-width: 280px;
-    }
-
-    .day-col {
-        flex: 0 0 80px;
-        min-width: 80px;
-    }
-
-    .tasks-table th,
-    .tasks-table td {
-        padding: 0.5rem;
-        font-size: 0.8rem;
-    }
-
-    .tasks-table tbody td:nth-child(1) {
-        flex: 0 0 auto;
-        min-width: 280px;
-        width: 280px;
-    }
-
-    .tasks-table tbody td:nth-child(2),
-    .tasks-table tbody td:nth-child(3),
-    .tasks-table tbody td:nth-child(4),
-    .tasks-table tbody td:nth-child(5),
-    .tasks-table tbody td:nth-child(6),
-    .tasks-table tbody td:nth-child(7),
-    .tasks-table tbody td:nth-child(8) {
-        flex: 0 0 80px;
-        min-width: 80px;
-    }
-
-    .tasks-table tbody td:nth-child(9) {
-        flex: 0 0 70px;
-        min-width: 70px;
-    }
-
-    .state-circle {
-        width: 32px;
-        height: 32px;
-        font-size: 0.9rem;
-    }
-
-    .stats-panel {
-        grid-template-columns: 1fr;
-    }
-
-    .btn {
-        padding: 0.6rem 1rem;
-        font-size: 0.9rem;
-    }
-
-    .task-controls {
-        width: 100%;
-        justify-content: stretch;
-    }
-
-    .task-controls .btn {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .user-info {
-        flex-direction: column;
-        text-align: center;
-    }
-}
-
-@media (max-width: 480px) {
-    .header-content {
-        padding: 0 0.5rem;
-    }
-
-    .header h1 {
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .task-name-col {
-        width: 120px;
-    }
-
-    .day-col {
-        width: 60px;
-    }
-
-    .actions-col {
-        width: 60px;
-    }
-
-    .tasks-table th,
-    .tasks-table td {
-        padding: 0.35rem;
-        font-size: 0.7rem;
-    }
-
-    .state-circle {
-        width: 28px;
-        height: 28px;
-    }
-
-    .state-circle::after {
-        font-size: 1rem;
-    }
-
-    .stat-value {
-        font-size: 2rem;
-    }
-
-    .stat-percentage {
-        font-size: 1.2rem;
-    }
 }
 
 /* ============================================
@@ -775,4 +561,215 @@ body {
 
 #tasksContent.hidden {
     display: none;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .controls {
+        grid-template-columns: 1fr;
+    }
+
+    .task-controls {
+        justify-content: flex-start;
+    }
+
+    /* Ajustar columnas para tablets */
+    .day-col,
+    .tasks-table tbody td:nth-child(2),
+    .tasks-table tbody td:nth-child(3),
+    .tasks-table tbody td:nth-child(4),
+    .tasks-table tbody td:nth-child(5),
+    .tasks-table tbody td:nth-child(6),
+    .tasks-table tbody td:nth-child(7),
+    .tasks-table tbody td:nth-child(8) {
+        flex: 0 0 100px;
+        width: 100px;
+        min-width: 100px;
+        max-width: 100px;
+    }
+
+    .tasks-table th,
+    .tasks-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .state-circle {
+        width: 35px;
+        height: 35px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .login-section {
+        flex-direction: column;
+    }
+
+    .name-input,
+    .user-select {
+        width: 100%;
+        min-width: unset;
+    }
+
+    /* Ajustes críticos para móvil */
+    .task-name-col,
+    .tasks-table tbody td:nth-child(1),
+    .task-row .task-name-cell {
+        flex: 0 0 180px;
+        width: 180px;
+        min-width: 180px;
+        max-width: 180px;
+    }
+
+    .day-col,
+    .tasks-table tbody td:nth-child(2),
+    .tasks-table tbody td:nth-child(3),
+    .tasks-table tbody td:nth-child(4),
+    .tasks-table tbody td:nth-child(5),
+    .tasks-table tbody td:nth-child(6),
+    .tasks-table tbody td:nth-child(7),
+    .tasks-table tbody td:nth-child(8) {
+        flex: 0 0 60px;
+        width: 60px;
+        min-width: 60px;
+        max-width: 60px;
+    }
+
+    .actions-col,
+    .tasks-table tbody td:nth-child(9) {
+        flex: 0 0 50px;
+        width: 50px;
+        min-width: 50px;
+        max-width: 50px;
+    }
+
+    .tasks-table th,
+    .tasks-table td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.75rem;
+    }
+
+    .state-circle {
+        width: 32px;
+        height: 32px;
+    }
+
+    .state-circle::after {
+        font-size: 1.1rem;
+    }
+
+    .task-name-input {
+        font-size: 0.75rem;
+        padding: 0.35rem;
+    }
+
+    .stats-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .task-controls {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .task-controls .btn {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .user-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .action-btn {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-content {
+        padding: 0 0.5rem;
+    }
+
+    .header h1 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Tabla ultra compacta */
+    .task-name-col,
+    .tasks-table tbody td:nth-child(1),
+    .task-row .task-name-cell {
+        flex: 0 0 120px;
+        width: 120px;
+        min-width: 120px;
+        max-width: 120px;
+    }
+
+    .day-col,
+    .tasks-table tbody td:nth-child(2),
+    .tasks-table tbody td:nth-child(3),
+    .tasks-table tbody td:nth-child(4),
+    .tasks-table tbody td:nth-child(5),
+    .tasks-table tbody td:nth-child(6),
+    .tasks-table tbody td:nth-child(7),
+    .tasks-table tbody td:nth-child(8) {
+        flex: 0 0 45px;
+        width: 45px;
+        min-width: 45px;
+        max-width: 45px;
+    }
+
+    .actions-col,
+    .tasks-table tbody td:nth-child(9) {
+        flex: 0 0 40px;
+        width: 40px;
+        min-width: 40px;
+        max-width: 40px;
+    }
+
+    .tasks-table th,
+    .tasks-table td {
+        padding: 0.4rem 0.15rem;
+        font-size: 0.65rem;
+    }
+
+    .state-circle {
+        width: 28px;
+        height: 28px;
+    }
+
+    .state-circle::after {
+        font-size: 0.95rem;
+    }
+
+    .task-name-input {
+        font-size: 0.65rem;
+        padding: 0.25rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+    }
+
+    .stat-percentage {
+        font-size: 1.2rem;
+    }
+
+    .action-btn {
+        font-size: 0.9rem;
+    }
 }
