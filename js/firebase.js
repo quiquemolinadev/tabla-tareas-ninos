@@ -88,6 +88,11 @@ const CloudSync = {
 
     // Sincronizar datos en tiempo real (opcional)
     setupRealtimeSync(userId, onDataChange) {
+        if (!database) {
+            console.warn('⚠️ Firebase no está disponible.');
+            return () => {};
+        }
+
         try {
             const ref = database.ref(`usuarios/${userId}`);
             
@@ -97,7 +102,14 @@ const CloudSync = {
                     onDataChange(snapshot.val());
                 }
             });
-            // Cargar lista de todos los usuarios desde Firebase
+            
+            return () => ref.off(); // Función para desuscribirse
+        } catch (error) {
+            console.error('Error en sincronización en tiempo real:', error);
+        }
+    },
+
+    // Cargar lista de todos los usuarios desde Firebase
     async loadAllUsers() {
         if (!database) {
             console.warn('⚠️ Firebase no está disponible.');
