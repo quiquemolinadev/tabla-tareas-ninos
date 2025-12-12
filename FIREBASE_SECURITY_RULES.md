@@ -22,18 +22,9 @@ Sin reglas, cualquiera podría:
 ### Paso 2: Reemplaza las reglas con esto:
 
 ```json
-{
-  "rules": {
-    "usuarios": {
-      "$uid": {
-        // Cada usuario solo puede ver sus propios datos
-        ".read": "auth.uid === $uid",
-        // Cada usuario solo puede escribir en sus propios datos
-        ".write": "auth.uid === $uid"
-      }
-    }
-  }
-}
+git add .
+git commit -m "Fix: Workflow de GitHub Actions mejorado"
+git push origin main
 ```
 
 ### Paso 3: Click en "Publish"
@@ -72,19 +63,24 @@ Ejemplos adicionales que podrías usar:
 }
 ```
 
-### Permitir que root vea todos los datos
+### Permitir que root (administrador) vea y modifique TODO
 ```json
 {
   "rules": {
     "usuarios": {
       "$uid": {
         ".read": "auth.uid === $uid || auth.uid === 'usuario-root'",
-        ".write": "auth.uid === $uid"
+        ".write": "auth.uid === $uid || auth.uid === 'usuario-root'"
       }
     }
   }
 }
 ```
+
+Con esta regla:
+- ✅ Cada usuario solo ve/modifica sus propios datos
+- ✅ El usuario con ID `usuario-root` puede ver y modificar TODO
+- ✅ Perfecto para administradores que necesitan supervisar y editar datos de otros usuarios
 
 ### Solo lectura (sin escritura desde cliente)
 ```json
