@@ -237,6 +237,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    white-space: nowrap;
+    overflow: visible;
+    flex-shrink: 0;
 }
 
 .task-name-col {
@@ -244,16 +247,25 @@ body {
     flex: 0 0 auto;
     min-width: 360px;
     justify-content: flex-start;
+    white-space: nowrap;
+    overflow: visible;
+    flex-shrink: 0;
 }
 
 .day-col {
     flex: 0 0 120px;
     min-width: 120px;
+    white-space: nowrap;
+    overflow: visible;
+    flex-shrink: 0;
 }
 
 .actions-col {
     flex: 0 0 100px;
     min-width: 100px;
+    white-space: nowrap;
+    overflow: visible;
+    flex-shrink: 0;
 }
 
 .tasks-table td {
