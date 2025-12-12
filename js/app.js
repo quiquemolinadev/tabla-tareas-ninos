@@ -108,21 +108,69 @@ const App = {
             return;
         }
 
-        // Pedir PIN
-        const pin = prompt(`Ingresa PIN para ${user.nombre}:`);
-        
-        if (pin === null) {
-            this.isLoggingIn = false;
-            return;
-        }
+        // Pedir PIN usando modal
+        this.showPinModal(user.nombre, (pin) => {
+            if (pin === null) {
+                this.isLoggingIn = false;
+                return;
+            }
 
-        if (!Storage.verifyPin(userId, pin)) {
-            alert('PIN incorrecto');
-            this.isLoggingIn = false;
-            return;
-        }
+            if (!Storage.verifyPin(userId, pin)) {
+                alert('PIN incorrecto');
+                this.isLoggingIn = false;
+                return;
+            }
 
-        // PIN correcto - Cargar datos desde la nube si están disponibles
+            // PIN correcto - Cargar datos desde la nube si están disponibles
+            this.loginWithCloudSync(userId);
+        });
+    },
+
+    // Mostrar modal para pedir PIN
+    showPinModal(userName, callback) {
+        const modal = document.getElementById('pinModal');
+        const userNameEl = document.getElementById('pinModalUserName');
+        const pinInput = document.getElementById('pinInput');
+        const okBtn = document.getElementById('pinModalOkBtn');
+        const cancelBtn = document.getElementById('pinModalCancelBtn');
+
+        userNameEl.textContent = `PIN para ${userName}:`;
+        pinInput.value = '';
+        pinInput.focus();
+
+        modal.classList.remove('hidden');
+
+        const handleOk = () => {
+            const pin = pinInput.value;
+            cleanup();
+            modal.classList.add('hidden');
+            callback(pin);
+        };
+
+        const handleCancel = () => {
+            cleanup();
+            modal.classList.add('hidden');
+            callback(null);
+        };
+
+        const handleKeyPress = (e) => {
+            if (e.key === 'Enter') {
+                handleOk();
+            } else if (e.key === 'Escape') {
+                handleCancel();
+            }
+        };
+
+        okBtn.addEventListener('click', handleOk);
+        cancelBtn.addEventListener('click', handleCancel);
+        pinInput.addEventListener('keypress', handleKeyPress);
+
+        const cleanup = () => {
+            okBtn.removeEventListener('click', handleOk);
+            cancelBtn.removeEventListener('click', handleCancel);
+            pinInput.removeEventListener('keypress', handleKeyPress);
+        };
+    },
         this.loginWithCloudSync(userId);
     },
 
