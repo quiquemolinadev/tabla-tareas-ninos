@@ -1,22 +1,66 @@
-# 🚀 Guía de Deployment a GitHub Pages
+# 🚀 Guía de Deployment - GitHub Actions + Secrets
 
-## Paso 1: Preparar tu repositorio Git
+## 📦 Instalación Local
 
+1. **Clona el repositorio**
 ```bash
-cd tabla-tareas-ninos
-git init
-git add .
-git commit -m "Initial commit: Sistema de seguimiento de tareas infantiles"
+git clone https://github.com/TU_USUARIO/tabla_tareas_ninos.git
+cd tabla_tareas_ninos
 ```
 
-## Paso 2: Crear un repositorio en GitHub
+2. **Configura Firebase localmente**
+   - Copia `js/config.example.js` a `js/config.js`
+   - Abre `js/config.js` y reemplaza con tus credenciales de Firebase
 
-1. Ve a [github.com](https://github.com) y inicia sesión
-2. Haz clic en "New" para crear un nuevo repositorio
-3. Nombra el repositorio: `tabla-tareas-ninos`
-4. Elige "Public" (importante para GitHub Pages)
-5. NO inicialices con README (ya tienes uno)
-6. Haz clic en "Create repository"
+3. **Inicia un servidor local**
+```bash
+python -m http.server 8000
+```
+
+---
+
+## 🚀 Despliegue a GitHub Pages con CI/CD
+
+### Paso 1: Configura GitHub Secrets
+
+1. Ve a tu repositorio en GitHub
+2. **Settings** → **Secrets and variables** → **Actions**
+3. Crea estos **New repository secret**:
+
+```
+FIREBASE_API_KEY = Tu API Key
+FIREBASE_AUTH_DOMAIN = tu-proyecto.firebaseapp.com
+FIREBASE_DATABASE_URL = https://tu-proyecto.firebasedatabase.app
+FIREBASE_PROJECT_ID = tu-proyecto
+FIREBASE_STORAGE_BUCKET = tu-proyecto.appspot.com
+FIREBASE_MESSAGING_SENDER_ID = Tu Messaging ID
+FIREBASE_APP_ID = Tu App ID
+```
+
+**¿Dónde obtener estos valores?**
+- Ve a [Firebase Console](https://console.firebase.google.com/)
+- Abre tu proyecto → Settings (⚙️) → Project Settings
+- Copia cada valor
+
+### Paso 2: Habilita GitHub Pages
+
+1. Ve a **Settings** → **Pages**
+2. Source: **Deploy from a branch**
+3. Branch: `gh-pages` (será creada automáticamente)
+4. Click **Save**
+
+### Paso 3: Deploy automático
+
+```bash
+git push origin main
+```
+
+**El workflow hace automáticamente:**
+1. ✅ Checkoutea el código
+2. ✅ Genera `js/config.js` con tus Secrets
+3. ✅ Despliega a GitHub Pages
+
+**Tu app estará en:** `https://TU_USUARIO.github.io/tabla_tareas_ninos`
 
 ## Paso 3: Conectar tu repositorio local con GitHub
 

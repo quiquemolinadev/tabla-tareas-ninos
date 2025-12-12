@@ -18,6 +18,8 @@ yarn-error.log*
 dist/
 build/
 
+# Configuración con credenciales (NUNCA subir a GitHub)
+js/config.js
 # IDE
 .vscode/
 .idea/

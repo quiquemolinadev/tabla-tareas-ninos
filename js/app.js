@@ -122,20 +122,73 @@ const App = {
             return;
         }
 
-        // Login exitoso
-        Storage.setCurrentUser(userId);
-        this.currentUserId = userId;
-        userSelect.value = '';
-        this.hideLoginSection();
-        this.showMainContent();
-        this.render();
-        console.log('Login exitoso para:', user.nombre);
-        
-        this.isLoggingIn = false;
+        // PIN correcto - Cargar datos desde la nube si están disponibles
+        this.loginWithCloudSync(userId);
+    },
+
+    // Login con sincronización de cloud
+    async loginWithCloudSync(userId) {
+        try {
+            // Si Firebase está disponible, cargar datos de la nube
+            if (typeof CloudSync !== 'undefined' && CloudSync.isOnline()) {
+                console.log('Cargando datos desde Firebase...');
+                const cloudData = await CloudSync.loadFromCloud(userId);
+                
+                if (cloudData) {
+                    console.log('Datos cargados de Firebase', cloudData);
+                    // Actualizar localStorage con datos de la nube
+                    const localData = Storage.getData();
+                    const userIndex = localData.users.findIndex(u => u.id === userId);
+                    if (userIndex > -1) {
+                        // Mergear: mantener datos locales y actualizar con datos de nube
+                        const localUser = localData.users[userIndex];
+                        localData.users[userIndex] = {
+                            ...localUser,  // Mantener estructura local (id, nombre, pin, etc)
+                            ...cloudData,  // Sobrescribir con datos de nube (tareas, puntos, etc)
+                            id: userId,    // Asegurar que el id no se pierda
+                            tareas: cloudData.tareas || localUser.tareas || []  // Asegurar tareas existe
+                        };
+                        Storage.saveData(localData);
+                    }
+                }
+            }
+
+            // Completar login
+            Storage.setCurrentUser(userId);
+            this.currentUserId = userId;
+            document.getElementById('userSelect').value = '';
+            this.hideLoginSection();
+            this.showMainContent();
+            this.render();
+            console.log('Login exitoso');
+        } catch (error) {
+            console.error('Error durante login con cloud sync:', error);
+            // Continuar con login local si falla cloud
+            Storage.setCurrentUser(userId);
+            this.currentUserId = userId;
+            this.hideLoginSection();
+            this.showMainContent();
+            this.render();
+        } finally {
+            this.isLoggingIn = false;
+        }
     },
 
     // Manejar logout
-    handleLogout() {
+    async handleLogout() {
+        try {
+            // Guardar datos en la nube antes de logout
+            const currentUser = Storage.getCurrentUser();
+            if (currentUser && typeof CloudSync !== 'undefined' && CloudSync.isOnline()) {
+                console.log('Sincronizando datos con Firebase antes de logout...');
+                await CloudSync.saveToCloud(currentUser.id, currentUser);
+                console.log('Datos sincronizados exitosamente');
+            }
+        } catch (error) {
+            console.error('Error al sincronizar con Firebase:', error);
+            // Continuar con logout aunque falle cloud
+        }
+
         this.currentUserId = null;
         Storage.setCurrentUser(null);
         this.hideMainContent();
@@ -449,7 +502,8 @@ const App = {
         const tasksList = document.getElementById('tasksList');
         tasksList.innerHTML = '';
 
-        if (currentUser.tareas.length === 0) {
+        // Asegurar que tareas existe
+        if (!currentUser.tareas || currentUser.tareas.length === 0) {
             tasksList.innerHTML = `
                 <tr>
                     <td colspan="9" style="text-align: center; padding: 2rem; color: #999;">
