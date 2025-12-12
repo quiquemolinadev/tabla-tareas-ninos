@@ -310,10 +310,27 @@ const App = {
 
     // Manejar eliminación de tarea
     handleDeleteTask(taskId) {
-        if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
-            Storage.deleteTask(this.currentUserId, taskId);
-            this.render();
+        if (!confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
+            return;
         }
+
+        // Pedir PIN de root para confirmar eliminación
+        const rootPin = prompt('Ingresa el PIN de administrador para confirmar la eliminación:');
+        
+        if (rootPin === null) {
+            return; // Usuario canceló
+        }
+
+        // Verificar PIN contra el usuario root
+        if (!Storage.verifyPin('usuario-root', rootPin)) {
+            alert('PIN incorrecto. Eliminación cancelada.');
+            return;
+        }
+
+        // PIN correcto, eliminar la tarea
+        Storage.deleteTask(this.currentUserId, taskId);
+        this.render();
+        alert('Tarea eliminada exitosamente');
     },
 
     // Cargar lista de usuarios
