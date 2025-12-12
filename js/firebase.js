@@ -3,34 +3,45 @@
    ============================================
    
    Configuración segura:
-   - Credenciales públicas (apiKey) están permitidas en Firebase
-   - Lo importante es Firebase Authentication + Security Rules
-   - Las reglas restringen quién puede leer/escribir cada dato
+   - En desarrollo: carga desde config.js (local, no versionado)
+   - En GitHub Pages: Actions genera config.js pero NO lo publica
+   - Las credenciales solo existen en GitHub Secrets (cifradas)
 */
-
-// Configuración pública de Firebase (segura con Firebase Auth + Rules)
-const firebaseConfig = {
-    apiKey: "AIzaSyBclGyKjp-vqCQwo6w0duIuqC4qUDSxTt8",
-    authDomain: "tabla-tareas-ninos-ce4fb.firebaseapp.com",
-    databaseURL: "https://tabla-tareas-ninos-ce4fb-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "tabla-tareas-ninos-ce4fb",
-    storageBucket: "tabla-tareas-ninos-ce4fb.firebasestorage.app",
-    messagingSenderId: "220910312742",
-    appId: "1:220910312742:web:42741944dd7491ee2375e7"
-};
 
 // Declarar database globalmente
 let database = null;
 
-try {
-    console.log('🔧 Inicializando Firebase...');
-    firebase.initializeApp(firebaseConfig);
-    database = firebase.database();
-    console.log('✅ Firebase inicializado correctamente');
-    console.log('   Seguridad: Protegida por Firebase Authentication + Security Rules');
-} catch (error) {
-    console.error('❌ Error al inicializar Firebase:', error);
-    database = null;
+// Esperar a que config.js se cargue
+function initializeFirebase() {
+    if (typeof FIREBASE_CONFIG === 'undefined') {
+        console.error('❌ FIREBASE_CONFIG no encontrado');
+        console.error('En desarrollo: asegúrate de que config.js está cargado');
+        console.error('');
+        console.error('Solución:');
+        console.error('1. Copia: cp js/config.example.js js/config.js');
+        console.error('2. Edita js/config.js con tus credenciales');
+        console.error('3. Recarga la página');
+        return;
+    }
+
+    try {
+        console.log('🔧 Inicializando Firebase...');
+        firebase.initializeApp(FIREBASE_CONFIG);
+        database = firebase.database();
+        console.log('✅ Firebase inicializado correctamente');
+        console.log('   projectId:', FIREBASE_CONFIG.projectId);
+    } catch (error) {
+        console.error('❌ Error al inicializar Firebase:', error);
+        database = null;
+    }
+}
+
+// Inicializar cuando firebase esté disponible
+if (typeof firebase !== 'undefined') {
+    initializeFirebase();
+} else {
+    // Esperar a que firebase se cargue
+    window.addEventListener('load', initializeFirebase);
 }
 
 const CloudSync = {

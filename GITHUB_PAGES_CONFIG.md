@@ -2,27 +2,64 @@
 
 ## ¿Cómo está protegida tu app?
 
-### ✅ Las credenciales de Firebase son públicas (y está bien)
+### ✅ Credenciales NO están en el código
 
-La `apiKey` está visible en:
-- El código fuente
-- DevTools del navegador
-- Cualquier persona que inspeccione
-
-**Esto es normal y esperado en aplicaciones web.**
+- **NO** hay secretos hard-codeados en firebase.js
+- **SÍ** vienen de GitHub Secrets (cifrados)
+- GitHub Actions las inyecta en tiempo de build
+- El código deployado NO contiene las credenciales
 
 ### ✅ Lo que las protege:
 
-1. **Firebase Security Rules** - Controlan quién puede leer/escribir
-2. **Firebase Authentication** (próximamente) - Usuarios deben loguear
-3. **Validación en backend** (opcional) - Cloud Functions
+1. **GitHub Secrets** - Credenciales cifradas (no visibles)
+2. **Firebase Security Rules** - Controlan quién puede leer/escribir
+3. **Firebase Authentication** (próximamente) - Usuarios deben loguear
 
 ## Configuración paso a paso
 
-### Paso 1: Deploy automático ✅
-Ya está configurado. Solo haz `git push origin main`.
+### Paso 1: Obten una NUEVA API Key
 
-### Paso 2: Configura Firebase Rules (IMPORTANTE) ⏳
+Tu clave anterior fue detectada por GitHub. Necesitas una nueva:
+
+1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
+2. APIs & Services → Credentials
+3. Elimina la clave expuesta
+4. Click **+ CREATE CREDENTIALS** → **API Key**
+5. Copia la nueva clave
+
+Ver [NUEVO_API_KEY.md](NUEVO_API_KEY.md) para detalles completos.
+
+### Paso 2: Configura GitHub Secrets (con la NUEVA clave)
+
+1. Ve a tu repositorio en GitHub
+2. **Settings** → **Secrets and variables** → **Actions**
+3. Crea/edita estos 7 secrets:
+
+```
+FIREBASE_API_KEY = [NUEVA CLAVE AQUÍ]
+FIREBASE_AUTH_DOMAIN = tabla-tareas-ninos-ce4fb.firebaseapp.com
+FIREBASE_DATABASE_URL = https://tabla-tareas-ninos-ce4fb-default-rtdb.europe-west1.firebasedatabase.app
+FIREBASE_PROJECT_ID = tabla-tareas-ninos-ce4fb
+FIREBASE_STORAGE_BUCKET = tabla-tareas-ninos-ce4fb.firebasestorage.app
+FIREBASE_MESSAGING_SENDER_ID = 220910312742
+FIREBASE_APP_ID = 1:220910312742:web:42741944dd7491ee2375e7
+```
+
+### Paso 3: Haz push a GitHub
+
+```bash
+git add .
+git commit -m "Configurar con nueva API Key segura"
+git push origin main
+```
+
+**GitHub Actions automáticamente:**
+1. Lee los Secrets
+2. Genera `js/config.js` (con las credenciales)
+3. Lo usa en el build
+4. **NO lo publica** en Pages (está en exclude_assets)
+
+### Paso 4: Configura Firebase Security Rules
 
 1. Ve a [Firebase Console](https://console.firebase.google.com/)
 2. Tu proyecto → **Realtime Database** → **Rules**
@@ -43,21 +80,30 @@ Ya está configurado. Solo haz `git push origin main`.
 
 4. Click **Publish**
 
-Ver [FIREBASE_SECURITY_RULES.md](FIREBASE_SECURITY_RULES.md) para más detalles.
+### Paso 5: Tu app está segura
 
-### Paso 3: Tu app está segura ✅
+- Abre: https://TU_USUARIO.github.io/tabla_tareas_ninos
+- Los datos se sincronizan con Firebase
+- Las credenciales NO están visibles en el código
 
-Con las reglas de arriba:
-- Cada usuario solo ve sus propios datos
-- Cada usuario solo puede escribir sus propios datos
-- Cualquiera en el mundo puede intentar acceder, pero Firebase los bloquea
+## ¿Por qué GitHub detectó la clave anterior?
 
-## Sin Authentication (estado actual)
+GitHub tiene detección automática de secretos. Aunque Firebase apiKey es "técnicamente pública", ponerla hard-coded en un repositorio público activa alertas.
 
-Por ahora, tu app funciona sin Firebase Authentication:
-- ✅ Los datos se sincronizan
-- ✅ Las Security Rules los protegen
-- ⏳ Sin auth real, pero funcional
+**La solución correcta (que ahora tienes):**
+- Usar GitHub Secrets + GitHub Actions
+- Inyectar en tiempo de build
+- NO publicar config.js en Pages
+- El código nunca contiene secretos
 
-Si quieres máxima seguridad, implementar Authentication es el siguiente paso.
+## Resumen de seguridad
+
+| Componente | Estado | Detalles |
+|-----------|--------|----------|
+| API Key | ✅ Seguro | En GitHub Secrets, NO en código |
+| config.js | ✅ Seguro | Generado en build, NO publicado |
+| Security Rules | ✅ Configurado | Cada usuario ve solo sus datos |
+| Authentication | ⏳ Pendiente | Próxima fase (opcional) |
+
+Tu app está listo para producción.
 

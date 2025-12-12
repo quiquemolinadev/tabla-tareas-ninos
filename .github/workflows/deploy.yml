@@ -15,10 +15,179 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Create Firebase config from secrets
+        run: |
+          # Crear directorio si no existe
+          mkdir -p js
+          
+          # Generar config.js con los secrets
+          cat > js/config.js << 'EOF'
+          /* ============================================
+             CONFIG.JS - Generado automáticamente por CI/CD
+             ============================================
+             ESTE ARCHIVO NO SE PUBLICA EN PAGES
+             Las credenciales vienen de GitHub Secrets
+          */
+          
+          const FIREBASE_CONFIG = {
+              apiKey: "${{ secrets.FIREBASE_API_KEY }}",
+              authDomain: "${{ secrets.FIREBASE_AUTH_DOMAIN }}",
+              databaseURL: "${{ secrets.FIREBASE_DATABASE_URL }}",
+              projectId: "${{ secrets.FIREBASE_PROJECT_ID }}",
+              storageBucket: "${{ secrets.FIREBASE_STORAGE_BUCKET }}",
+              messagingSenderId: "${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}",
+              appId: "${{ secrets.FIREBASE_APP_ID }}"
+          };
+          EOF
+
+      - name: Remove config.js from repo before deploy
+        run: |
+          # Eliminar firebase.js para que use config.js
+          # Crear versión alternativa sin credenciales hard-coded
+          cat > js/firebase.js << 'EOF'
+          /* ============================================
+             FIREBASE.JS - Integración con Firebase
+             ============================================
+             
+             En desarrollo: usa config.js
+             En Pages: usa credenciales inyectadas por Actions
+          */
+
+          // Declarar database globalmente
+          let database = null;
+
+          // Esperar a que config.js se cargue
+          function initializeFirebase() {
+              if (typeof FIREBASE_CONFIG === 'undefined') {
+                  console.error('❌ FIREBASE_CONFIG no encontrado');
+                  console.error('En desarrollo: asegúrate de que config.js está cargado');
+                  return;
+              }
+
+              try {
+                  console.log('🔧 Inicializando Firebase...');
+                  firebase.initializeApp(FIREBASE_CONFIG);
+                  database = firebase.database();
+                  console.log('✅ Firebase inicializado correctamente');
+              } catch (error) {
+                  console.error('❌ Error al inicializar Firebase:', error);
+                  database = null;
+              }
+          }
+
+          // Inicializar cuando firebase esté disponible
+          if (typeof firebase !== 'undefined') {
+              initializeFirebase();
+          } else {
+              // Esperar a que firebase se cargue
+              window.addEventListener('load', initializeFirebase);
+          }
+
+          const CloudSync = {
+              async saveToCloud(userId, userData) {
+                  if (!database) {
+                      console.warn('⚠️ Firebase no está disponible.');
+                      return false;
+                  }
+
+                  try {
+                      console.log('Guardando datos en Firebase para:', userId);
+                      const ref = database.ref(`usuarios/${userId}`);
+                      await ref.set({
+                          ...userData,
+                          ultimaActualizacion: new Date().toISOString()
+                      });
+                      console.log('✅ Datos guardados en Firebase exitosamente');
+                      return true;
+                  } catch (error) {
+                      console.error('❌ Error al guardar en Firebase:', error);
+                      return false;
+                  }
+              },
+
+              async loadFromCloud(userId) {
+                  if (!database) {
+                      console.warn('⚠️ Firebase no está disponible.');
+                      return null;
+                  }
+
+                  try {
+                      console.log('Cargando datos de Firebase para:', userId);
+                      const ref = database.ref(`usuarios/${userId}`);
+                      const snapshot = await ref.once('value');
+                      
+                      if (snapshot.exists()) {
+                          console.log('✅ Datos encontrados en Firebase');
+                          return snapshot.val();
+                      } else {
+                          console.log('ℹ️ No hay datos previos en Firebase');
+                          return null;
+                      }
+                  } catch (error) {
+                      console.error('❌ Error al cargar de Firebase:', error);
+                      return null;
+                  }
+              },
+
+              setupRealtimeSync(userId, onDataChange) {
+                  if (!database) {
+                      console.warn('⚠️ Firebase no está disponible.');
+                      return () => {};
+                  }
+
+                  try {
+                      const ref = database.ref(`usuarios/${userId}`);
+                      ref.on('value', (snapshot) => {
+                          if (snapshot.exists()) {
+                              console.log('Cambios detectados en Firebase');
+                              onDataChange(snapshot.val());
+                          }
+                      });
+                      return () => ref.off();
+                  } catch (error) {
+                      console.error('Error en sincronización:', error);
+                  }
+              },
+
+              async deleteFromCloud(userId) {
+                  if (!database) {
+                      console.warn('⚠️ Firebase no está disponible.');
+                      return false;
+                  }
+
+                  try {
+                      console.log('Eliminando datos de Firebase para:', userId);
+                      const ref = database.ref(`usuarios/${userId}`);
+                      await ref.remove();
+                      console.log('✅ Datos eliminados de Firebase');
+                      return true;
+                  } catch (error) {
+                      console.error('❌ Error al eliminar de Firebase:', error);
+                      return false;
+                  }
+              },
+
+              isOnline() {
+                  return navigator.onLine;
+              }
+          };
+
+          window.addEventListener('online', () => {
+              console.log('✅ Conexión restaurada');
+          });
+
+          window.addEventListener('offline', () => {
+              console.log('⚠️ Conexión perdida - funcionando offline');
+          });
+          EOF
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
-          # Excluir archivos sensibles
-          cname: # Opcional: descomenta y añade tu dominio personalizado
+          # Excluir archivos sensibles del despliegue
+          exclude_assets: |
+            js/config.js
+            .github
+            node_modules

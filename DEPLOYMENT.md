@@ -8,39 +8,78 @@ git clone https://github.com/TU_USUARIO/tabla_tareas_ninos.git
 cd tabla_tareas_ninos
 ```
 
-2. **Inicia un servidor local**
+2. **Configura Firebase localmente**
+```bash
+# Copia la plantilla
+cp js/config.example.js js/config.js
+
+# Edita con tus credenciales (incluida la NUEVA API Key)
+nano js/config.js
+```
+
+3. **Inicia un servidor local**
 ```bash
 python -m http.server 8000
 ```
 
-3. **Abre en el navegador**
+4. **Abre en el navegador**
 ```
 http://localhost:8000
 ```
 
 ---
 
-## 🚀 Despliegue a GitHub Pages (AUTOMÁTICO)
+## 🚀 Despliegue a GitHub Pages (AUTOMÁTICO + SEGURO)
 
-### Paso 1: Haz push a GitHub
+### Paso 1: Obten una NUEVA API Key (IMPORTANTE)
+
+**⚠️ La clave anterior fue detectada. Debes crear una nueva:**
+
+1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
+2. Selecciona tu proyecto
+3. APIs & Services → Credentials
+4. **Elimina** la clave expuesta
+5. Click **+ CREATE CREDENTIALS** → **API Key**
+6. Copia la NUEVA clave
+
+Ver [NUEVO_API_KEY.md](NUEVO_API_KEY.md) para detalles.
+
+### Paso 2: Configura GitHub Secrets (NUEVA clave)
+
+1. Ve a tu repositorio en GitHub
+2. **Settings** → **Secrets and variables** → **Actions**
+3. Edita `FIREBASE_API_KEY` (o crea si no existe)
+4. Pega la **NUEVA** clave
+5. Click **Update secret** (o Create)
+
+**Los otros 6 secrets:**
+```
+FIREBASE_AUTH_DOMAIN = tabla-tareas-ninos-ce4fb.firebaseapp.com
+FIREBASE_DATABASE_URL = https://tabla-tareas-ninos-ce4fb-default-rtdb.europe-west1.firebasedatabase.app
+FIREBASE_PROJECT_ID = tabla-tareas-ninos-ce4fb
+FIREBASE_STORAGE_BUCKET = tabla-tareas-ninos-ce4fb.firebasestorage.app
+FIREBASE_MESSAGING_SENDER_ID = 220910312742
+FIREBASE_APP_ID = 1:220910312742:web:42741944dd7491ee2375e7
+```
+
+### Paso 3: Deploy automático
 
 ```bash
 git add .
-git commit -m "Desplegar aplicación"
+git commit -m "Usar nueva API Key con GitHub Actions"
 git push origin main
 ```
 
-### Paso 2: Verifica que el workflow se ejecutó
+### Paso 4: Verifica en GitHub Actions
 
-1. Ve a tu repositorio en GitHub
-2. Click en **Actions**
-3. Deberías ver "Deploy to GitHub Pages" en **verde ✅**
-4. Espera 1-2 minutos
+1. Ve a tu repositorio → **Actions**
+2. Deberías ver "Deploy to GitHub Pages" ejecutándose
+3. Espera a que termine (verde ✅)
 
-### Paso 3: Configura Firebase Security Rules
+### Paso 5: Configura Firebase Security Rules
 
 1. Ve a [Firebase Console](https://console.firebase.google.com/)
-2. Abre tu proyecto → **Realtime Database** → **Rules**
+2. Tu proyecto → **Realtime Database** → **Rules**
 3. Reemplaza con esto:
 
 ```json
@@ -56,9 +95,9 @@ git push origin main
 }
 ```
 
-4. Click en **Publish**
+4. Click **Publish**
 
-### Paso 4: Tu app está en vivo
+### Paso 6: Tu app está en vivo
 
 ```
 https://TU_USUARIO.github.io/tabla_tareas_ninos
@@ -66,33 +105,30 @@ https://TU_USUARIO.github.io/tabla_tareas_ninos
 
 ---
 
-## 🔒 Seguridad
+## 🔒 Cómo está protegida
 
-✅ **Credenciales públicas** (apiKey está en navegador, es normal)
-✅ **Firebase Security Rules** (protege los datos)
-⏳ **Sin Authentication aún** (cualquiera puede escribir con cualquier ID)
-
-Para máxima seguridad:
-- Ver [FIREBASE_SECURITY_RULES.md](FIREBASE_SECURITY_RULES.md)
-- Implementar Firebase Authentication (próxima fase)
+✅ **API Key NO está en el código** - Solo en GitHub Secrets (cifrados)
+✅ **GitHub Actions genera config.js** - Pero no lo publica
+✅ **Firebase Security Rules** - Protege los datos
+✅ **Validación en cliente** - Código funcional
 
 ---
 
 ## 🐛 Solución de problemas
 
 **Error: "Firebase no está disponible"**
-- Recarga la página (F5)
-- Verifica que no hay bloqueadores de publicidad
+- Asegúrate de que config.js existe (Actions debe haberlo generado)
+- Verifica que los Secrets están creados correctamente
+- Abre consola (F12) y busca errores
 
-**Error: "No se puede guardar en Firebase"**
-- Abre consola (F12)
-- Verifica que ves: "✅ Firebase inicializado correctamente"
-- Si no, asegúrate de que Firebase está alcanzable (sin VPN)
+**Error: "FIREBASE_CONFIG no encontrado"**
+- En local: asegúrate de haber copiado config.example.js a config.js
+- En Pages: asegúrate de que los 7 GitHub Secrets están creados
 
-**La app dice "Datos sincronizados" pero no los veo**
-- Es normal si no tienes Authentication aún
-- Los datos se guardan pero cualquiera puede verlos
-- Implementa Security Rules (Paso 3) para restringir acceso
+**El sitio sigue sin actualizarse**
+- Limpia cache del navegador (Ctrl+Shift+Delete)
+- Espera 2 minutos para que Pages se actualice
+- Verifica que el workflow está en verde
 
 ## Paso 3: Conectar tu repositorio local con GitHub
 
