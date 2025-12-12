@@ -44,7 +44,18 @@ http://localhost:8000
 
 Ver [NUEVO_API_KEY.md](NUEVO_API_KEY.md) para detalles.
 
-### Paso 2: Configura GitHub Secrets (NUEVA clave)
+### Paso 2: Configura GitHub Pages para Actions
+
+⚠️ **IMPORTANTE - PASO FÁCIL DE OLVIDAR**
+
+1. Ve a tu repositorio en GitHub
+2. **Settings** → **Pages**
+3. En **Source**, selecciona: **GitHub Actions**
+4. Click **Save**
+
+Esto permite que el workflow tenga permisos para desplegar.
+
+### Paso 3: Configura GitHub Secrets (NUEVA clave)
 
 1. Ve a tu repositorio en GitHub
 2. **Settings** → **Secrets and variables** → **Actions**
