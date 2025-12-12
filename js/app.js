@@ -413,23 +413,23 @@ const App = {
             return;
         }
 
-        // Pedir PIN de root para confirmar eliminación
-        const rootPin = prompt('Ingresa el PIN de administrador para confirmar la eliminación:');
-        
-        if (rootPin === null) {
-            return; // Usuario canceló
-        }
+        // Pedir PIN de root para confirmar eliminación (usando modal)
+        this.showPinModal('Administrador', (rootPin) => {
+            if (rootPin === null) {
+                return; // Usuario canceló
+            }
 
-        // Verificar PIN contra el usuario root
-        if (!Storage.verifyPin('usuario-root', rootPin)) {
-            alert('PIN incorrecto. Eliminación cancelada.');
-            return;
-        }
+            // Verificar PIN contra el usuario root
+            if (!Storage.verifyPin('usuario-root', rootPin)) {
+                alert('PIN incorrecto. Eliminación cancelada.');
+                return;
+            }
 
-        // PIN correcto, eliminar la tarea
-        Storage.deleteTask(this.currentUserId, taskId);
-        this.render();
-        alert('Tarea eliminada exitosamente');
+            // PIN correcto, eliminar la tarea
+            Storage.deleteTask(this.currentUserId, taskId);
+            this.render();
+            alert('Tarea eliminada exitosamente');
+        });
     },
 
     // Cargar lista de usuarios
