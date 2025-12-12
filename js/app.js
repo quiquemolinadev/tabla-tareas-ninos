@@ -389,6 +389,34 @@ const App = {
     // Cargar lista de usuarios
     loadUsers() {
         const userSelect = document.getElementById('userSelect');
+        
+        // Sincronizar usuarios desde Firebase primero (si está disponible)
+        if (typeof CloudSync !== 'undefined' && CloudSync.isOnline()) {
+            CloudSync.loadAllUsers().then(usuariosFirebase => {
+                if (usuariosFirebase && usuariosFirebase.length > 0) {
+                    // Actualizar localStorage con los usuarios de Firebase
+                    const data = Storage.getData();
+                    data.users = usuariosFirebase;
+                    Storage.saveData(data);
+                    console.log('✅ Usuarios sincronizados desde Firebase');
+                }
+                
+                // Luego cargar en el dropdown
+                this._renderUserSelect();
+            }).catch(error => {
+                console.error('Error sincronizando usuarios:', error);
+                // Si falla, usar los locales
+                this._renderUserSelect();
+            });
+        } else {
+            // Si no hay Firebase, usar locales
+            this._renderUserSelect();
+        }
+    },
+
+    // Renderizar dropdown de usuarios (helper privado)
+    _renderUserSelect() {
+        const userSelect = document.getElementById('userSelect');
         const users = Storage.getAllUsers();
         
         userSelect.innerHTML = '<option value="">-- Seleccionar usuario --</option>';

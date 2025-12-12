@@ -97,10 +97,31 @@ const CloudSync = {
                     onDataChange(snapshot.val());
                 }
             });
+            // Cargar lista de todos los usuarios desde Firebase
+    async loadAllUsers() {
+        if (!database) {
+            console.warn('⚠️ Firebase no está disponible.');
+            return null;
+        }
+
+        try {
+            console.log('Cargando lista de usuarios desde Firebase...');
+            const ref = database.ref('usuarios');
+            const snapshot = await ref.once('value');
             
-            return () => ref.off(); // Función para desuscribirse
+            if (snapshot.exists()) {
+                const usuariosObj = snapshot.val();
+                // Convertir objeto a array
+                const usuariosArray = Object.values(usuariosObj);
+                console.log('✅ Lista de usuarios cargada. Total:', usuariosArray.length);
+                return usuariosArray;
+            } else {
+                console.log('ℹ️ No hay usuarios en Firebase');
+                return [];
+            }
         } catch (error) {
-            console.error('Error en sincronización en tiempo real:', error);
+            console.error('❌ Error al cargar usuarios de Firebase:', error);
+            return null;
         }
     },
 
