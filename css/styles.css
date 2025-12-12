@@ -211,11 +211,22 @@ body {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.95rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .tasks-table thead {
     background-color: var(--color-primary);
     color: white;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.tasks-table thead tr {
+    display: flex;
+    width: 100%;
+    gap: 0;
 }
 
 .tasks-table th {
@@ -223,35 +234,80 @@ body {
     text-align: center;
     font-weight: 600;
     border-right: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .task-name-col {
     text-align: left !important;
-    width: 250px;
+    flex: 0 0 auto;
+    min-width: 360px;
+    justify-content: flex-start;
 }
 
 .day-col {
-    width: 120px;
+    flex: 0 0 120px;
+    min-width: 120px;
 }
 
 .actions-col {
-    width: 100px;
+    flex: 0 0 100px;
+    min-width: 100px;
 }
 
 .tasks-table td {
     padding: 1rem;
     border-bottom: 1px solid var(--color-border);
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Alineación de celdas de datos con encabezados */
+.tasks-table tbody td:nth-child(1) {
+    flex: 0 0 auto;
+    min-width: 360px;
+    justify-content: flex-start;
+}
+
+.tasks-table tbody td:nth-child(2),
+.tasks-table tbody td:nth-child(3),
+.tasks-table tbody td:nth-child(4),
+.tasks-table tbody td:nth-child(5),
+.tasks-table tbody td:nth-child(6),
+.tasks-table tbody td:nth-child(7),
+.tasks-table tbody td:nth-child(8) {
+    flex: 0 0 120px;
+    min-width: 120px;
+}
+
+.tasks-table tbody td:nth-child(9) {
+    flex: 0 0 100px;
+    min-width: 100px;
 }
 
 .tasks-table tbody tr:hover {
     background-color: rgba(59, 130, 246, 0.05);
 }
 
+.tasks-table tbody tr {
+    display: flex;
+    width: 100%;
+    gap: 0;
+}
+
 /* Task Name Column */
 .task-row .task-name-cell {
     text-align: left;
     font-weight: 500;
+    flex: 0 0 auto;
+    min-width: 360px;
+    justify-content: flex-start;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    width: 360px;
 }
 
 .task-name-input {
@@ -261,6 +317,8 @@ body {
     border-radius: var(--radius);
     font-size: inherit;
     font-weight: 500;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .task-name-input:focus {
@@ -420,7 +478,8 @@ body {
     }
 
     .day-col {
-        width: 100px;
+        flex: 0 0 100px;
+        min-width: 100px;
     }
 
     .tasks-table th,
@@ -451,17 +510,41 @@ body {
     }
 
     .task-name-col {
-        width: 150px;
+        flex: 0 0 auto;
+        min-width: 280px;
     }
 
     .day-col {
-        width: 80px;
+        flex: 0 0 80px;
+        min-width: 80px;
     }
 
     .tasks-table th,
     .tasks-table td {
         padding: 0.5rem;
         font-size: 0.8rem;
+    }
+
+    .tasks-table tbody td:nth-child(1) {
+        flex: 0 0 auto;
+        min-width: 280px;
+        width: 280px;
+    }
+
+    .tasks-table tbody td:nth-child(2),
+    .tasks-table tbody td:nth-child(3),
+    .tasks-table tbody td:nth-child(4),
+    .tasks-table tbody td:nth-child(5),
+    .tasks-table tbody td:nth-child(6),
+    .tasks-table tbody td:nth-child(7),
+    .tasks-table tbody td:nth-child(8) {
+        flex: 0 0 80px;
+        min-width: 80px;
+    }
+
+    .tasks-table tbody td:nth-child(9) {
+        flex: 0 0 70px;
+        min-width: 70px;
     }
 
     .state-circle {
