@@ -1,4 +1,4 @@
-# 🚀 Guía de Deployment - GitHub Actions + Secrets
+# 🚀 Guía de Deployment - GitHub Pages + Firebase Seguro
 
 ## 📦 Instalación Local
 
@@ -8,59 +8,91 @@ git clone https://github.com/TU_USUARIO/tabla_tareas_ninos.git
 cd tabla_tareas_ninos
 ```
 
-2. **Configura Firebase localmente**
-   - Copia `js/config.example.js` a `js/config.js`
-   - Abre `js/config.js` y reemplaza con tus credenciales de Firebase
-
-3. **Inicia un servidor local**
+2. **Inicia un servidor local**
 ```bash
 python -m http.server 8000
 ```
 
+3. **Abre en el navegador**
+```
+http://localhost:8000
+```
+
 ---
 
-## 🚀 Despliegue a GitHub Pages con CI/CD
+## 🚀 Despliegue a GitHub Pages (AUTOMÁTICO)
 
-### Paso 1: Configura GitHub Secrets
-
-1. Ve a tu repositorio en GitHub
-2. **Settings** → **Secrets and variables** → **Actions**
-3. Crea estos **New repository secret**:
-
-```
-FIREBASE_API_KEY = Tu API Key
-FIREBASE_AUTH_DOMAIN = tu-proyecto.firebaseapp.com
-FIREBASE_DATABASE_URL = https://tu-proyecto.firebasedatabase.app
-FIREBASE_PROJECT_ID = tu-proyecto
-FIREBASE_STORAGE_BUCKET = tu-proyecto.appspot.com
-FIREBASE_MESSAGING_SENDER_ID = Tu Messaging ID
-FIREBASE_APP_ID = Tu App ID
-```
-
-**¿Dónde obtener estos valores?**
-- Ve a [Firebase Console](https://console.firebase.google.com/)
-- Abre tu proyecto → Settings (⚙️) → Project Settings
-- Copia cada valor
-
-### Paso 2: Habilita GitHub Pages
-
-1. Ve a **Settings** → **Pages**
-2. Source: **Deploy from a branch**
-3. Branch: `gh-pages` (será creada automáticamente)
-4. Click **Save**
-
-### Paso 3: Deploy automático
+### Paso 1: Haz push a GitHub
 
 ```bash
+git add .
+git commit -m "Desplegar aplicación"
 git push origin main
 ```
 
-**El workflow hace automáticamente:**
-1. ✅ Checkoutea el código
-2. ✅ Genera `js/config.js` con tus Secrets
-3. ✅ Despliega a GitHub Pages
+### Paso 2: Verifica que el workflow se ejecutó
 
-**Tu app estará en:** `https://TU_USUARIO.github.io/tabla_tareas_ninos`
+1. Ve a tu repositorio en GitHub
+2. Click en **Actions**
+3. Deberías ver "Deploy to GitHub Pages" en **verde ✅**
+4. Espera 1-2 minutos
+
+### Paso 3: Configura Firebase Security Rules
+
+1. Ve a [Firebase Console](https://console.firebase.google.com/)
+2. Abre tu proyecto → **Realtime Database** → **Rules**
+3. Reemplaza con esto:
+
+```json
+{
+  "rules": {
+    "usuarios": {
+      "$uid": {
+        ".read": "auth.uid === $uid",
+        ".write": "auth.uid === $uid"
+      }
+    }
+  }
+}
+```
+
+4. Click en **Publish**
+
+### Paso 4: Tu app está en vivo
+
+```
+https://TU_USUARIO.github.io/tabla_tareas_ninos
+```
+
+---
+
+## 🔒 Seguridad
+
+✅ **Credenciales públicas** (apiKey está en navegador, es normal)
+✅ **Firebase Security Rules** (protege los datos)
+⏳ **Sin Authentication aún** (cualquiera puede escribir con cualquier ID)
+
+Para máxima seguridad:
+- Ver [FIREBASE_SECURITY_RULES.md](FIREBASE_SECURITY_RULES.md)
+- Implementar Firebase Authentication (próxima fase)
+
+---
+
+## 🐛 Solución de problemas
+
+**Error: "Firebase no está disponible"**
+- Recarga la página (F5)
+- Verifica que no hay bloqueadores de publicidad
+
+**Error: "No se puede guardar en Firebase"**
+- Abre consola (F12)
+- Verifica que ves: "✅ Firebase inicializado correctamente"
+- Si no, asegúrate de que Firebase está alcanzable (sin VPN)
+
+**La app dice "Datos sincronizados" pero no los veo**
+- Es normal si no tienes Authentication aún
+- Los datos se guardan pero cualquiera puede verlos
+- Implementa Security Rules (Paso 3) para restringir acceso
 
 ## Paso 3: Conectar tu repositorio local con GitHub
 

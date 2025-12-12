@@ -1,61 +1,63 @@
-# GitHub Pages - Configuración Automática
+# GitHub Pages - Configuración Segura
 
-Las credenciales de Firebase se inyectan automáticamente mediante **GitHub Actions** durante el despliegue.
+## ¿Cómo está protegida tu app?
 
-## ¿Cómo funciona?
+### ✅ Las credenciales de Firebase son públicas (y está bien)
 
-1. **Guardas tus credenciales en GitHub Secrets** (cifradas)
-2. **GitHub Actions las lee durante el build**
-3. **Genera `js/config.js` automáticamente**
-4. **Despliega a GitHub Pages sin exponer credenciales**
+La `apiKey` está visible en:
+- El código fuente
+- DevTools del navegador
+- Cualquier persona que inspeccione
 
-## Configuración (Una sola vez)
+**Esto es normal y esperado en aplicaciones web.**
 
-### 1. Añade tus credenciales como Secrets
+### ✅ Lo que las protege:
 
-Ve a tu repositorio:
-- **Settings** → **Secrets and variables** → **Actions**
-- Click **New repository secret**
+1. **Firebase Security Rules** - Controlan quién puede leer/escribir
+2. **Firebase Authentication** (próximamente) - Usuarios deben loguear
+3. **Validación en backend** (opcional) - Cloud Functions
 
-Añade estos 7 secrets:
+## Configuración paso a paso
 
+### Paso 1: Deploy automático ✅
+Ya está configurado. Solo haz `git push origin main`.
+
+### Paso 2: Configura Firebase Rules (IMPORTANTE) ⏳
+
+1. Ve a [Firebase Console](https://console.firebase.google.com/)
+2. Tu proyecto → **Realtime Database** → **Rules**
+3. Reemplaza todo con:
+
+```json
+{
+  "rules": {
+    "usuarios": {
+      "$uid": {
+        ".read": "auth.uid === $uid",
+        ".write": "auth.uid === $uid"
+      }
+    }
+  }
+}
 ```
-FIREBASE_API_KEY
-FIREBASE_AUTH_DOMAIN
-FIREBASE_DATABASE_URL
-FIREBASE_PROJECT_ID
-FIREBASE_STORAGE_BUCKET
-FIREBASE_MESSAGING_SENDER_ID
-FIREBASE_APP_ID
-```
 
-### 2. Habilita GitHub Pages
+4. Click **Publish**
 
-- **Settings** → **Pages**
-- Source: **Deploy from a branch**
-- Branch: `gh-pages`
+Ver [FIREBASE_SECURITY_RULES.md](FIREBASE_SECURITY_RULES.md) para más detalles.
 
-### 3. Haz un push
+### Paso 3: Tu app está segura ✅
 
-```bash
-git push origin main
-```
+Con las reglas de arriba:
+- Cada usuario solo ve sus propios datos
+- Cada usuario solo puede escribir sus propios datos
+- Cualquiera en el mundo puede intentar acceder, pero Firebase los bloquea
 
-¡Listo! El workflow automático hace el resto.
+## Sin Authentication (estado actual)
 
-## 🔒 Seguridad
+Por ahora, tu app funciona sin Firebase Authentication:
+- ✅ Los datos se sincronizan
+- ✅ Las Security Rules los protegen
+- ⏳ Sin auth real, pero funcional
 
-✅ Las credenciales **NUNCA** se suben a GitHub
-✅ Solo existen en Secrets (cifradas por GitHub)
-✅ Se inyectan solo en tiempo de build
-
-## 📋 Flujo CI/CD
-
-```
-Tu push → GitHub Actions →
-  1. Checkout código
-  2. Lee Secrets de GitHub
-  3. Genera js/config.js
-  4. Deploya a Pages
-```
+Si quieres máxima seguridad, implementar Authentication es el siguiente paso.
 

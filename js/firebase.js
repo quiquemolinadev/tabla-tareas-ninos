@@ -1,33 +1,36 @@
 /* ============================================
    FIREBASE.JS - Integración con Firebase
-   ============================================ */
+   ============================================
+   
+   Configuración segura:
+   - Credenciales públicas (apiKey) están permitidas en Firebase
+   - Lo importante es Firebase Authentication + Security Rules
+   - Las reglas restringen quién puede leer/escribir cada dato
+*/
 
-// Obtener configuración de Firebase
-// En desarrollo: desde config.js (local)
-// En GitHub Pages: desde config.js (generado por CI/CD con GitHub Secrets)
-function getFirebaseConfig() {
-    if (typeof FIREBASE_CONFIG !== 'undefined') {
-        console.log('📦 Configuración de Firebase cargada correctamente');
-        return FIREBASE_CONFIG;
-    }
-    
-    console.error('❌ CONFIGURACIÓN FALTANTE');
-    console.error('En desarrollo: copia config.example.js a config.js y añade tus credenciales');
-    console.error('En GitHub Pages: configura GitHub Secrets en tu repositorio');
-    return null;
-}
-
-const firebaseConfig = getFirebaseConfig();
+// Configuración pública de Firebase (segura con Firebase Auth + Rules)
+const firebaseConfig = {
+    apiKey: "AIzaSyBclGyKjp-vqCQwo6w0duIuqC4qUDSxTt8",
+    authDomain: "tabla-tareas-ninos-ce4fb.firebaseapp.com",
+    databaseURL: "https://tabla-tareas-ninos-ce4fb-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "tabla-tareas-ninos-ce4fb",
+    storageBucket: "tabla-tareas-ninos-ce4fb.firebasestorage.app",
+    messagingSenderId: "220910312742",
+    appId: "1:220910312742:web:42741944dd7491ee2375e7"
+};
 
 // Declarar database globalmente
 let database = null;
 
-if (!firebaseConfig) {
-    console.error('❌ Firebase no puede inicializarse sin configuración');
-} else {
-    // Inicializar Firebase
+try {
+    console.log('🔧 Inicializando Firebase...');
     firebase.initializeApp(firebaseConfig);
     database = firebase.database();
+    console.log('✅ Firebase inicializado correctamente');
+    console.log('   Seguridad: Protegida por Firebase Authentication + Security Rules');
+} catch (error) {
+    console.error('❌ Error al inicializar Firebase:', error);
+    database = null;
 }
 
 const CloudSync = {

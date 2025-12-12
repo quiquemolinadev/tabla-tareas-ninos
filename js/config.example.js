@@ -2,11 +2,22 @@
    CONFIG.EXAMPLE.JS - Plantilla de Configuración
    ============================================
    
-   INSTRUCCIONES:
-   1. Copia este archivo como "config.js" en la misma carpeta
-   2. Reemplaza los valores con tus credenciales de Firebase
-   3. El archivo config.js está en .gitignore, nunca se subirá a GitHub
-   4. Nunca compartas el archivo config.js con nadie
+   ⚠️ NOTA IMPORTANTE sobre SEGURIDAD:
+   
+   Las credenciales de Firebase API Key son PÚBLICAS.
+   No es un secreto. Está permitido compartirlas.
+   
+   Lo que las protege es:
+   1. Firebase Authentication (usuarios deben loguear)
+   2. Security Rules (reglas que restringen acceso)
+   
+   NUNCA debes guardar en git:
+   - Claves de bases de datos privadas
+   - Tokens JWT privados
+   - Contraseñas de administrador
+   
+   Pero las credenciales de Firebase Client son públicas
+   y están en la consola de tu navegador.
 */
 
 const FIREBASE_CONFIG = {
