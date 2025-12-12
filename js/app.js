@@ -171,8 +171,6 @@ const App = {
             pinInput.removeEventListener('keypress', handleKeyPress);
         };
     },
-        this.loginWithCloudSync(userId);
-    },
 
     // Login con sincronización de cloud
     async loginWithCloudSync(userId) {
